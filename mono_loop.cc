@@ -6,15 +6,22 @@
 
 const std::size_t HEADER_SIZE = 8;
 
+unsigned long long int read_bytes(int length) {
+        std::vector<unsigned char> vec(length);
+        std::fread(&vec[0], sizeof(unsigned char), length, stdin);
+        unsigned long long int result = 0;
+        for (int i=0; i<length; i++) {
+                result += (unsigned long long int) vec[i] << ((length - i - 1) * 8);
+        }
+        return result;
+}
+
 int main(int argc, char** argv) {
 
-	if (argc != 4) {
-		std::cerr << std::endl << "Usage: ./mono_wayve path_to_vocabulary path_to_settings image_count" << std::endl;
+	if (argc != 3) {
+		std::cerr << std::endl << "Usage: ./mono_wayve path_to_vocabulary path_to_settings" << std::endl;
 		return 1;
 	}
-
-	const int image_count = atoi(argv[3]);
-	std::cout << "image_count: " << image_count << std::endl;
 
 	ORB_SLAM3::System SLAM(argv[1], argv[2], ORB_SLAM3::System::MONOCULAR, false);
 	float image_scale = SLAM.GetImageScale();
@@ -24,23 +31,11 @@ int main(int argc, char** argv) {
 	cv::Mat im;
 	std::freopen(nullptr, "rb", stdin);
 
+        const int image_count = read_bytes(HEADER_SIZE);
+
 	for (int i=0; i<image_count; i++) {
-		// get timestamp
-		std::vector<unsigned char> ts_vec(HEADER_SIZE);
-		std::fread(&ts_vec[0], sizeof(unsigned char), HEADER_SIZE, stdin);
-		unsigned long long int ts = 0;
-		for (int j=0; j<HEADER_SIZE; j++) {
-			ts += (unsigned long long int) ts_vec[j] << ((HEADER_SIZE - j - 1) * 8);
-		}
-
-		// get next image size
-		std::vector<unsigned char> header_vec(HEADER_SIZE);
-		std::fread(&header_vec[0], sizeof(unsigned char), HEADER_SIZE, stdin);
-
-		unsigned long long int image_size = 0;
-		for (int j=0; j<HEADER_SIZE; j++) {
-			image_size += (unsigned long long int) header_vec[j] << ((HEADER_SIZE - j - 1) * 8);
-		}
+                unsigned long long int ts = read_bytes(HEADER_SIZE);
+                unsigned long long int image_size = read_bytes(HEADER_SIZE);
 
 		// get next image
 		std::vector<unsigned char> image_vec(image_size);

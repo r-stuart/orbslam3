@@ -6,4 +6,4 @@ debug:
 
 run:
 	mkdir -p out && \
-	python producer.py | docker run -i --rm -v $(shell pwd)/out:/out orbslam_base 3682 
+	python producer.py /mnt/slow/MH_01_easy/mav0/cam0/data/ | docker run -i --rm -v $(shell pwd)/out:/out orbslam_base

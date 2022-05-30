@@ -55,5 +55,3 @@ WORKDIR /
 COPY --from=build . ./
 
 ENTRYPOINT ["/ORB_SLAM3/mono_loop", "/ORB_SLAM3/Vocabulary/ORBvoc.txt", "/ORB_SLAM3/Examples/Monocular/EuRoC.yaml"]
-
-CMD ["0"]
