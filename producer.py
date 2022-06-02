@@ -3,6 +3,7 @@ import os
 import sys
 
 HEADER_SIZE = 8
+ULLI_MAX = (2 << 63) - 1
 
 def send(data):
     sys.stdout.buffer.write(data)
@@ -13,7 +14,6 @@ def to_bytes(number):
 
 def main(root):
     ims = list(sorted([f for f in os.listdir(root) if f.endswith('.png')]))
-    send(to_bytes(len(ims)))
     for im in ims:
         with open(os.path.join(root, im), 'rb') as f:
             ts = to_bytes(int(im.split('.')[0]))
@@ -22,6 +22,7 @@ def main(root):
         send(ts)
         send(length)
         send(loaded_im)
+    send(to_bytes(ULLI_MAX))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

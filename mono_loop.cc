@@ -1,10 +1,12 @@
 #include <iostream>
+#include <limits>
 
 #include <opencv2/core/core.hpp>
 
 #include <System.h>
 
 const std::size_t HEADER_SIZE = 8;
+const unsigned long long int ULLI_MAX = std::numeric_limits<unsigned long long int>::max();
 
 unsigned long long int read_bytes(int length) {
         std::vector<unsigned char> vec(length);
@@ -31,11 +33,10 @@ int main(int argc, char** argv) {
 	cv::Mat im;
 	std::freopen(nullptr, "rb", stdin);
 
-        const int image_count = read_bytes(HEADER_SIZE);
+	unsigned long long int ts = 0;
 
-	for (int i=0; i<image_count; i++) {
-                unsigned long long int ts = read_bytes(HEADER_SIZE);
-                unsigned long long int image_size = read_bytes(HEADER_SIZE);
+	while ((ts = read_bytes(HEADER_SIZE)) != ULLI_MAX) {
+        unsigned long long int image_size = read_bytes(HEADER_SIZE);
 
 		// get next image
 		std::vector<unsigned char> image_vec(image_size);
