@@ -21,7 +21,7 @@ unsigned long long int read_bytes(int length) {
 int main(int argc, char** argv) {
 
 	if (argc != 3) {
-		std::cerr << std::endl << "Usage: ./mono_wayve path_to_vocabulary path_to_settings" << std::endl;
+		std::cerr << std::endl << "Usage: ./mono_loop path_to_vocabulary path_to_settings" << std::endl;
 		return 1;
 	}
 
